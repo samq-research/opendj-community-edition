@@ -2,7 +2,8 @@ name: Mend CLI Scan
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - master
 
 jobs:
   build:
