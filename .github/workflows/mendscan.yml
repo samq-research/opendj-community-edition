@@ -34,3 +34,4 @@ jobs:
         name: MendCLi
         path: ~/.mend
         retention-days: 1
+
