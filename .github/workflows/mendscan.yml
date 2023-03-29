@@ -6,18 +6,30 @@ on:
 
 jobs:
   build:
-        runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
 
-        steps:
-        - uses: actions/checkout@v3
-
-        - name: Mend CLI Scan
-          env:
-            MEND_SAST_SERVER_URL: https://saas.mend.io/sast
-            MEND_SAST_API_TOKEN: ${{secrets.MEND_SAST_API}}
-            MEND_SAST_ORGANIZATION: ${{secrets.MEND_SAST_ORGANIZATION}}
-          run: |
-            echo Downloading Mend CLI
-            sudo curl https://downloads.mend.io/cli/linux_amd64/mend -o /usr/local/bin/mend && sudo chmod +x /usr/local/bin/mend
-            echo Start Mend CLI scan
-            mend sast --java-engine-generation 2
+    - name: Mend CLI Scan
+      env:
+        MEND_SAST_SERVER_URL: https://saas.mend.io/sast
+        MEND_SAST_API_TOKEN: ${{secrets.MEND_SAST_API}}
+        MEND_SAST_ORGANIZATION: ${{secrets.MEND_SAST_ORGANIZATION}}
+      run: |
+        echo Downloading Mend CLI
+        sudo curl https://downloads.mend.io/cli/linux_amd64/mend -o /usr/local/bin/mend && sudo chmod +x /usr/local/bin/mend
+        echo Start Mend CLI scan
+        mend sast --java-engine-generation 2
+    - name: 'Upload Mend CLI folder'
+      uses: actions/upload-artifact@v3
+      with:
+        name: MendCLI
+        path: ~/.mend
+        retention-days: 1
+    - name: 'Upload Mend CLI folder if failure'
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: MendCLi
+        path: ~/.mend
+        retention-days: 1
